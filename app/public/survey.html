@@ -184,15 +184,13 @@
             <br>
             <br>
 
-            <script src="https://code.jquery.com/jquery.js"></script>
-
             <!-- Modal -->
             <div id="bestFriendModal" class="modal fade" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h3 class="modal-title">Your New Best Friend</h1>
+                            <h3 class="modal-title">Here is your perfect match!</h1>
                         </div>
                         <div class="modal-body">
                             <h2 id="bestFriend"></h2>
@@ -206,16 +204,64 @@
             </div>
 
             <footer class="footer">
-                <div class="container">
-                    <p>
-                        <a href="../data/friends.js">API Friends List</a> |
-                        <a href="/">GitHub Repo</a>
-                    </p>
-                </div>
-            </footer>
-    </div>
+                    <div class="container">
+                        <p>
+                            <a href="../data/friends.js">API Friends List</a> |
+                            <a href="/">GitHub Repo</a>
+                        </p>
+                    </div>
+                </footer>
+        </div>
+
+            <script src="https://code.jquery.com/jquery.js"></script>
+
+        </body>
+
+        </html>
+
+        <script type="text/javascript">
+
+            $("#submit").on("click", function(event) {
+                event.preventDefault();
+
+                // Form validation
+                var valid = true;
+                if ($("#name").val() === "" || $("#photo").val() === "") {
+                    valid = false;
+                } else if ($("#q1").val() === "empty" || $("#q2").val() === "empty" || $("#q3").val() === "empty" || $("#q4").val() === "empty" || $("#q5").val() === "empty" || $("#q6").val() === "empty" || $("#q7").val() === "empty" || $("#q8").val() === "empty" || $("#q9").val() === "empty" || $("#q10").val() === "empty") {
+                    valid = false;
+                }
+                if (valid === true) {
+                    var newUser = {
+                        name: $("#name").val().trim(),
+                        photo: $("#photo").val().trim(),
+                        scores: [
+                            $("#q1").val(),
+                            $("#q2").val(),
+                            $("#q3").val(),
+                            $("#q4").val(),
+                            $("#q5").val(),
+                            $("#q6").val(),
+                            $("#q7").val(),
+                            $("#q8").val(),
+                            $("#q9").val(),
+                            $("#q10").val()
+                        ]
+                    };
+                    var currentURL = window.location.origin;
+                    // Ajax call for receiving response after POST 
+                    $.post(currentURL + "/api/friends", newUser, function(data) {
+                        $("#bestFriend").text(data.name);
+                        $("#bestFriendPhoto").attr("src", data.photo);
+                        $("#bestFriendModal").modal("toggle");
+                    });
+                } else {
+                    // If a required field is missing, show alert
+                    alert("Please fill out all the fields.");
+                }
+            });
+        </script>
 
 
-</body>
 
-</html>
+
