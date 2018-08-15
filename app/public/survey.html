@@ -177,66 +177,53 @@
             </form>
 
             <br>
-
-            <button type="submit" id="submit" class="btn btn-primary btn-lg">
-                <span class="glyphicon glyphicon-ok-circle"></span>Submit</button>
-
-            <br>
             <br>
         </form>
 
-            <footer class="footer">
-                <div class="container">
-                    <p>
-                        <a href="/api/friends.js">API Friends List</a> |
-                        <a href="https://github.com/jeapen10/FriendFinder">GitHub Repo</a>
-                    </p>
-                </div>
-            </footer>
+        <!-- Button trigger modal -->
+        <button type="submit" id="submit" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#bestFriendModal">
+                <span class="glyphicon glyphicon-ok-circle"></span>Submit</button>
 
-            <!-- Modal -->
-            <div id="bestFriendModal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
+        <!-- Modal -->
+        <div id="bestFriendModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
 
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title">Here is your most compatible friend!</h3>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body text-center">
-                            <h2 id="bestFriend"></h2>
-                            <img id="bestFriendPhoto" src="" height="300" width="250">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Here is your most compatible friend!</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <h2 id="bestFriend"></h2>
+                        <img id="bestFriendPhoto" src="" height="300" width="250">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
+        </div>
 
     </div>
 
-    <script
-    src="https://code.jquery.com/jquery-3.3.1.js"
-    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-    crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <script type="text/javascript">
 
         $("#submit").on("click", function (event) {
-        event.preventDefault();
+            event.preventDefault();
 
-        // Form validation
-        function validateForm() {
-            var valid = true;
+            // Form validation
+            function validateForm() {
+                var valid = true;
 
-            if ($("#name").val() === "" || $("#photo").val() === "") {
-                valid = false;
-            } else if ($("#q1").val() === "empty" || $("#q2").val() === "empty" || $("#q3").val() === "empty" || $("#q4").val() === "empty" || $("#q5").val() === "empty" || $("#q6").val() === "empty" || $("#q7").val() === "empty" || $("#q8").val() === "empty" || $("#q9").val() === "empty" || $("#q10").val() === "empty") {
-                valid = false;
+                if ($("#name").val() === "" || $("#photo").val() === "") {
+                    valid = false;
+                } else if ($("#q1").val() === "empty" || $("#q2").val() === "empty" || $("#q3").val() === "empty" || $("#q4").val() === "empty" || $("#q5").val() === "empty" || $("#q6").val() === "empty" || $("#q7").val() === "empty" || $("#q8").val() === "empty" || $("#q9").val() === "empty" || $("#q10").val() === "empty") {
+                    valid = false;
+                }
+
+                return valid;
             }
-         
-            return valid;
-        }
             // If all required fields are filled, create object for user's data
             if (validateForm()) {
                 var newUser = {
@@ -253,34 +240,43 @@
                         $("#q8").val(),
                         $("#q9").val(),
                         $("#q10").val()
-                ]
-            };
-            console.log(newUser);
+                    ]
+                };
+                console.log(newUser);
 
-            var currentURL = window.location.origin;
-            // Ajax call for receiving response after POST 
-            $.post("/api/friends", newUser, function (data) {
-                // Display best friend and photo
-                $("#bestFriend").text(data.name);
-                $("#bestFriendPhoto").attr("src", data.photo);
-                $("#bestFriendModal").modal("toggle");
+                var currentURL = window.location.origin;
+                // Ajax call for receiving response after POST 
+                $.post("/api/friends", newUser, function (data) {
+                    // Display best friend and photo
+                    $("#bestFriend").text(data.name);
+                    $("#bestFriendPhoto").attr("src", data.photo);
+                    $("#bestFriendModal").modal("toggle");
 
-                // clear input fields 
-                $("#name").val("");
-                $("#photo").val("");
-            });
-            // Close modal
-            $("#closeModal").click(function() {
-                $.get("/", function(req, res) {
-                    location.replace(res);
-                })
-            });
-        } else {
-            // If a required field is missing, show alert
-            alert("Please fill out all the fields.");
-        }
-    })
-</script>
+                    // clear input fields 
+                    $("#name").val("");
+                    $("#photo").val("");
+                });
+                // Close modal
+                $("#closeModal").click(function () {
+                    $.get("/", function (req, res) {
+                        location.replace(res);
+                    })
+                });
+            } else {
+                // If a required field is missing, show alert
+                alert("Please fill out all the fields.");
+            }
+        });
+
+        <footer class="footer">
+            <div class="container">
+                <p>
+                    <a href="/api/friends.js">API Friends List</a> |
+                        <a href="https://github.com/jeapen10/FriendFinder">GitHub Repo</a>
+                </p>
+            </div>
+        </footer>
+    </script>
 
 
 </body>
