@@ -17,7 +17,7 @@
         <hr>
 
         <h2>About You</h2>
-        <form>
+        <form method="POST" id="survey-form">
             <div class="form-group">
                 <label for="name">Name (Required)</label>
                 <input type="name" class="form-control" id="name" placeholder="Enter your name">
@@ -183,18 +183,29 @@
 
             <br>
             <br>
+        </form>
+
+            <footer class="footer">
+                <div class="container">
+                    <p>
+                        <a href="/api/friends.js">API Friends List</a> |
+                        <a href="https://github.com/jeapen10/FriendFinder">GitHub Repo</a>
+                    </p>
+                </div>
+            </footer>
 
             <!-- Modal -->
             <div id="bestFriendModal" class="modal fade" role="dialog">
                 <div class="modal-dialog">
+
                     <div class="modal-content">
                         <div class="modal-header">
+                            <h3 class="modal-title">Here is your most compatible friend!</h3>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h3 class="modal-title">Here is your perfect match!</h1>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body text-center">
                             <h2 id="bestFriend"></h2>
-                            <img id="bestFriendPhoto" src="#">
+                            <img id="bestFriendPhoto" src="" height="300" width="250">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -203,65 +214,71 @@
                 </div>
             </div>
 
-            <footer class="footer">
-                    <div class="container">
-                        <p>
-                            <a href="../data/friends.js">API Friends List</a> |
-                            <a href="https://github.com/jeapen10/FriendFinder">GitHub Repo</a>
-                        </p>
-                    </div>
-                </footer>
-        </div>
+    </div>
 
-            <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+</body>
 
-        </body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+crossorigin="anonymous"></script>
+<script type="text/javascript">
 
-        </html>
+    $("#submit").on("click", function (event) {
+        event.preventDefault();
 
-        <script type="text/javascript">
+        // Form validation
+        function validateForm() {
+            var valid = true;
 
-            $("#submit").on("click", function(event) {
-                event.preventDefault();
+            if ($("#name").val() === "" || $("#photo").val() === "") {
+                valid = false;
+            } else if ($("#q1").val() === "empty" || $("#q2").val() === "empty" || $("#q3").val() === "empty" || $("#q4").val() === "empty" || $("#q5").val() === "empty" || $("#q6").val() === "empty" || $("#q7").val() === "empty" || $("#q8").val() === "empty" || $("#q9").val() === "empty" || $("#q10").val() === "empty") {
+                valid = false;
+            }
+         
+            return valid;
+        }
+            // If all required fields are filled, create object for user's data
+            if (validateForm()) {
+                var newUser = {
+                    name: $("#name").val().trim(),
+                    photo: $("#photo").val().trim(),
+                    scores: [
+                        $("#q1").val(),
+                        $("#q2").val(),
+                        $("#q3").val(),
+                        $("#q4").val(),
+                        $("#q5").val(),
+                        $("#q6").val(),
+                        $("#q7").val(),
+                        $("#q8").val(),
+                        $("#q9").val(),
+                        $("#q10").val()
+                ]
+            };
+            console.log(newUser);
 
-                // Form validation
-                var valid = true;
-                if ($("#name").val() === "" || $("#photo").val() === "") {
-                    valid = false;
-                } else if ($("#q1").val() === "empty" || $("#q2").val() === "empty" || $("#q3").val() === "empty" || $("#q4").val() === "empty" || $("#q5").val() === "empty" || $("#q6").val() === "empty" || $("#q7").val() === "empty" || $("#q8").val() === "empty" || $("#q9").val() === "empty" || $("#q10").val() === "empty") {
-                    valid = false;
-                }
-                if (valid === true) {
-                    var newUser = {
-                        name: $("#name").val().trim(),
-                        photo: $("#photo").val().trim(),
-                        scores: [
-                            $("#q1").val(),
-                            $("#q2").val(),
-                            $("#q3").val(),
-                            $("#q4").val(),
-                            $("#q5").val(),
-                            $("#q6").val(),
-                            $("#q7").val(),
-                            $("#q8").val(),
-                            $("#q9").val(),
-                            $("#q10").val()
-                        ]
-                    };
-                    var currentURL = window.location.origin;
-                    // Ajax call for receiving response after POST 
-                    $.post(currentURL + "/api/friends", newUser, function(data) {
-                        $("#bestFriend").text(data.name);
-                        $("#bestFriendPhoto").attr("src", data.photo);
-                        $("#bestFriendModal").modal("toggle");
-                    });
-                } else {
-                    // If a required field is missing, show alert
-                    alert("Please fill out all the fields.");
-                }
+            var currentURL = window.location.origin;
+            // Ajax call for receiving response after POST 
+            $.post(currentURL + "/api/friends", newUser, function (data) {
+                // Display best friend and photo
+                $("#bestFriend").text(data.name);
+                $("#bestFriendPhoto").attr("src", data.photo);
+                $("#bestFriendModal").modal("toggle");
+
+                // clear input fields 
+                $("#name").val("");
+                $("#photo").val("");
             });
-        </script>
-
-
-
-
+            // Close modal
+            $("#closeModal").click(function() {
+                $.get("/", function(req, res) {
+                    location.replace(res);
+                })
+            });
+        } else {
+            // If a required field is missing, show alert
+            alert("Please fill out all the fields.");
+        }
+    })
+</script>
+</html>

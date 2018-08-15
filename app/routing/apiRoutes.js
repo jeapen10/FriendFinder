@@ -1,3 +1,4 @@
+var express = require("express");
 var friends = require("../data/friends");
 
 module.exports = function (app) {
@@ -8,39 +9,49 @@ module.exports = function (app) {
     app.post("/api/friends", function (req, res) {
         console.log(req.body.scores);
 
-    // Receive user details
-    var user = req.body;
-
-    // parseInt for scores
-    for (var i = 0; i < user.scores.length; i++) {
-        user.scores[i] = parseInt(user.scores[i]);
-    }
-
-    // The default friend match is the first friend 
-    // result will be whoever has the minimum difference in scores
-    var bestFriendIndex = 0;
-    var minimumDifference = 40;
-
-
-    for (var i = 0; i < friends.length; i++) {
-        var totalDifference = 0;
-
-        for (var j = 0; j < friends[i].scores.length; j++) {
-            var difference = Math.abs(user.scores[j] - friends[i].scores[j]);
-            totalDifference += difference;
+    // Receive newUser details
+    var newUser = req.body;
+    console.log(newUser);
+    
+    newUser.scores.forEach(function(score) {
+        if (score.scores == "1 (Strongly Disagree)") {
+            score.scores = 1;
         }
-
-        // if there is a new minimum, change the best friend index and set the new minimum 
-        if (totalDifference < minimumDifference) {
-            bestFriendIndex = i;
-            minimumDifference = totalDifference;
+        else if (score.scores == "5 (Strongly Agree)") {
+            score.scores = 5;
         }
-    }
-
-    // Once we get a match add the current user to the friends array
-    friends.push(user);
-
-    // Show the user the best friend match
-    res.json(friends[bestFriendIndex]);
+        else {
+            score.scores = parseInt(score.scores);
+        }
     });
-};
+
+    var bestMatch = {};
+    var matchedFriend = 0;
+
+    // Max possible different score is 50 (5 * 10 questions = 50 minus 1 * 10 questions = 10. Total 40)
+    var bestMatchScore = 40;
+
+    for (var friend = 0; friend < friends.length; friend++) {
+        var totalScoreDifference = 0;
+
+        for (var score = 0; score < friends[friend].scores.length; score++) {
+            var diff = Math.abs(friends[friend].scores[score] - newUser.scores[score]);
+            totalScoreDifference += diff;
+          }
+          
+          console.log(totalScoreDifference, friends[friend].name);
+          
+          if (totalScoreDifference < bestMatchScore) {
+            matchedFriend = friend;
+            bestMatchScore = totalScoreDifference;
+          }
+        }
+
+        // Found a friend
+        bestMatch = friends[matchedFriend];
+        // Push new friend to friends array
+        friends.push(newUser);
+        // Return best match 
+        res.json(bestMatch);
+    })
+}
