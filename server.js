@@ -15,7 +15,7 @@ app.use(bodyParser.text());
 app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
 // Static route
-app.use('/static', express.static(path.join(__dirname, 'app/public')))
+// app.use('/static', express.static('app/public'));
 
 // ROUTES
 require("./app/routing/apiRoutes")(app);

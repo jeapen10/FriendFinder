@@ -6,17 +6,17 @@ module.exports = function(app) {
 
     // Home page
 	app.get("/", function (req, res) {
-		res.sendFile("home.html", {root: path.join('app/public')});
+		res.sendFile(path.join(__dirname + '/../public/home.html'));
 	});
 
     // Survey page
 	app.get('/survey', function (req, res) {
-		res.sendFile("survey.html", {root: path.join('app/public')});
+		res.sendFile(path.join(__dirname + '/../public/survey.html'));
     });
 	
 	// Default home page
-	app.get("*", function(req, res) {
-		res.sendFile("home.html", {root: path.join('app/public')})
-	});
+	// app.get("*", function(req, res) {
+	// 	res.sendFile("home.html", path.join(__dirname, '/../app/public'));
+	// });
 
 }
